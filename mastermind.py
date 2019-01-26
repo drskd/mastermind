@@ -28,6 +28,9 @@ list_slots = [slot_1, slot_2, slot_3, slot_4]
 # Check button to have feedback on current proposal
 check = Button(label="Check", button_type="success")
 
+# Restart button 
+restart = Button(label="Restart", button_type="success")
+
 # Current iteration
 current_try = 0
 
@@ -89,6 +92,28 @@ def check_button():
 check.on_click(check_button)
 
 
+def restart_button():
+    global ds, df_historic, true_combination, current_try
+
+    #Dataframe containing historic of trials and answers
+    df_historic = pd.DataFrame(columns=['slot_1','slot_2','slot_3','slot_4', 'correct_elements','correctly_positioned', 'try'])
+
+    # Choice of the combination to guess
+    true_combination = choose_random_combination()
+
+    # Restart trial counter
+    current_try = 0
+  
+    # Update of data source of circle plot
+    ds.add([], 'x')
+    ds.add([], 'y')
+    ds.add([], 'fill_color')
+    ds.add([], 'line_color')
+    ds.add([], 'size')
+ 
+# When the check button is clicked, the function check_button() is triggered
+restart.on_click(restart_button)
+
 # Declaration of the plot
 p = figure(plot_height=600, plot_width=800, title="", x_range = (-2,5), y_range=(-1,10))
 p.grid.visible = False
@@ -101,7 +126,8 @@ ds = plot_scatter.data_source
 
 # Configuration of widgets
 row_slots = row(slot_1, slot_2, slot_3, slot_4)
-col_left = column(row_slots, check)
+buttons = row(check, restart)
+col_left = column(row_slots, buttons)
 layout = row(col_left, p)
 
 curdoc().add_root(layout)
